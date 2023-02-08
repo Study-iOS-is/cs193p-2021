@@ -111,3 +111,54 @@ func padding(_ edges: Edge.Set = .all, _ length: CGFloat? = nil) -> some View
       - 추가하기!!
   - ViewBuilder
     - ViewBuilder 안에 여러 View를 쭉 선언하면 됨.
+
+### 2-6 LazyVGrid, ScrollView, Adoptive Grid Item
+- 버튼 색 -> blue
+  - 터치할 수 있음?
+  - default 색깔은 blue임
+- LazyVGrid
+  - params - columns가 고정, row는 가변적
+    - LazyHGrid는 rows가 고정, columns가 가변
+  - GridItem
+    - 왜 int가 아니라 GridItem으로?
+    - GridItem을 받음으로서 할 수 있는 것: GridItem을 설정해서
+      - `GridItem(.fixed(200))`
+      - default: flexible
+  - HStack 안에서는 height가 길었는데, LazyVGrid 안에서는 작아짐
+  - default로 설정된 wh는 다음과 같다. 
+    - width는 gridItem에 따라
+    - height는 가능한한 smaller
+  - Grid가 점유하는 공간이 작아졌음에도 button이 계속 맨아래에 있을 수 있는 이유는, 둘 사이 공간을 Spacer()가 모두 점유하고 있기 때문
+    - padding / spacer 를 넣었을 때, 레이아웃이 어떻게 바뀌는지 알아두자
+- Card를 더 Card답게 보이게 하고 싶어
+  - aspect ratio를 w:h = 2:3로 하고 싶은 경우
+    - `aspectRatio(2/3, contentMode: .fit)`
+    - .fill vs .fit
+- Scroll되게 하고 싶어 -> LazyVGrid를 ScrollView안에 넣으면 됨
+  - 문제상황: Card가 너무 많아서 버튼이 보이지 않음
+- lazy는 나중에 다룰거야
+  - lazyVGrid is lazy about accessing the body vars of all of its Views. we only get the value of a body var in a LazyVGrid for Views that actually appear on screen. So this LazyVGrid could scale to having thousand of cards, 왜나하면 보통 creating views는 가벼운 작업임. 보통 view는 적은 property만 갖고 있음. isFaceUp같이.
+  - 근데 accessing a View's body는 다른 얘기임
+  - That's going to create a whole bunch of other Views, and potentially cause some of their body vars to get accessed
+  - So there's a lot of infastructure in SwiftUI to only access a View's body var when absolutely necessary.
+  - This laziness we see in LazyVGrid
+  - 다음주에, 언제, 어떻게 system이 View's body var에 access하는지 더 자세히 공부할거야.
+- ScrollView에서 가장자리 좌우가 잘리는 현상
+  - 왜?
+    - stroke는 border에서 시작해서 lineWidth만큼 그림
+    - 그래서 일부는 안쪽에, 일부는 바깥에 그려진 것 처럼 보임
+  - 원하는 것?
+    - inside the boundaries of the Shape.
+  - 해결 방법
+    - strokeBorder() method로 변경
+- landscape 버전에서는 column개수를 늘리고 싶어
+  - 문제
+    - 화면 회전시 fixed column이 아니었으면 좋겠다.
+  - 해결
+    - `LazyVGrid(columns: [GridItem(.adoptive(minimum: CGFloat?))])`
+    - 각 row에 가능한 한 많은 item을 담으려고 한다.
+    - 따라서 minimum width를 설정해야 한다.
+    - ScrollView라서 다행임. 보통은, It's hard to pick a width that works well in both portrait and landscape. What we really want to do is pick our width based on how much screen real state is being offered to us. We'll learn how to do that later next week or the weak after, but 지금은 일단 80이라고 두자. (스크롤 뷰 덕분에 overflow(?)인 카드들도 확인 가능함.)
+
+Coming up next
+- game logic!
