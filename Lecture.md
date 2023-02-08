@@ -61,6 +61,7 @@ func padding(_ edges: Edge.Set = .all, _ length: CGFloat? = nil) -> some View
   - String, Array 같은 주요 Type 들은 Instruction만 봐도 큰 도움이 됨.
 - Developer Documentation으로 Doc을 만들 수 있다.
 
+### 2-4 ForEach & Identifiable
 - ForEach
   - bag of lego maker.
   - 따라서 view combiner에 넣어줘야 한다. ForEach의 return값은 body의 return값이 될 수 없다.
@@ -72,6 +73,7 @@ func padding(_ edges: Edge.Set = .all, _ length: CGFloat? = nil) -> some View
     ```
     - 발생한 에러: Referencing initializer 'init(_:content:)' on 'ForEach' requires that 'String' conform to 'Identifiable'
     - `String: Identifiable`: `String` hehaves like `Identifiable`
+      - behaves like ==> Functional Programming
     - Unique ID가 있음
     - 왜 forEach에서 unique identifier가 있어야 할까?
       - emojis라는 array가 재정렬되거나, array에 새로운 요소가 삽입, 삭제될 때 등등의 상황에
@@ -84,3 +86,28 @@ func padding(_ edges: Edge.Set = .all, _ length: CGFloat? = nil) -> some View
         - 같은 emoji가 있다면, 두 카드에 guesture event callback이 동시에 적용된다.
       - `id: \.self` : String itself
       - 
+
+### 2-5: Buttons
+- 카드를 추가하고 빼는 버튼을 달거야.
+  - range
+    - `m...n` : m부터 n까지
+    - `m..<n` : m부터 n-1까지
+  - Button(action: ()->Void, label: ()->View)
+    - label은 왜 function일까?
+      - label의 type은 ViewBuilder function
+  - Spacer()
+    - minLength 설정 가능
+    - default는 기기마다 다르다
+  - computed property in View
+  - SFSymbols
+    - `Image(systemName: "plus.circle")`
+  - + /- 상한 설정하기
+    - 하지 않으면 Preview crash 발생
+      - n이 0보다 작을 때
+      - n이 count보다 클 때
+  - some View:
+    - 어떤 View.. 정확한 타입 x
+    - 왜 View가 아니라 some View?
+      - 추가하기!!
+  - ViewBuilder
+    - ViewBuilder 안에 여러 View를 쭉 선언하면 됨.
